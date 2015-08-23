@@ -177,7 +177,6 @@ public:
    */
   RefCounted<DelayNode> createDelayNode(float initialDelay = 0.5F, float maxDelay = 6.0F);
   
-  
   /*! \brief Creates a gain node with an optional playbackSpeed_ value
    */ 
   RefCounted<AudioBufferSourceNode> createAudioBufferSourceNode(float playbackSpeed_ = 1.0F);
