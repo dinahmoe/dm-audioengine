@@ -52,14 +52,12 @@
 #include "AudioBufferSourceNode.hpp"
 #include "BiquadFilterNode.hpp"
 #include "DelayNode.hpp"
-#include "ConvolverNode.hpp"
 #include "ChannelSplitterNode.hpp"
 #include "ChannelMergerNode.hpp"
 #include "DynamicsCompressorNode.hpp"
 #include "WaveShaperNode.hpp"
 #include "OscillatorNode.hpp"
 #include "SummingNode.hpp"
-#include "BrickWallLimiterNode.hpp"
 #include "DmTimedConsumerMT.hpp"
 #include "DmEasyPoolST.hpp"
 
@@ -175,11 +173,6 @@ public:
   RefCounted<BiquadFilterNode> createBiquadFilterNode(
     DspBasics::BiquadFilterType type_ = DspBasics::BiquadFilterType::LOWPASS, float cutoff_ = 0.5F,float q_ = 1.0F, float gain_ = 1.0F);
   
-  
-  /*! \brief Creates a convolver node
-   */
-  RefCounted<ConvolverNode> createConvolverNode();
-  
   /*! \brief Creates a delay node
    */
   RefCounted<DelayNode> createDelayNode(float initialDelay = 0.5F, float maxDelay = 6.0F);
@@ -213,10 +206,6 @@ public:
    */ 
   RefCounted<SummingNode> createSummingNode(float initialValue1_ = 1.0F, float initialValue2_ = 1.0F);
   
-  /*! \brief Creates a brickwalllimiter node
-   */ 
-  RefCounted<BrickWallLimiterNode> createBrickWallLimiterNode();
-
   /*! \brief Creates a TimelineEvent
    */ 
   TimelineEvent* createTimelineEvent();

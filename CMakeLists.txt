@@ -53,11 +53,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 SET(AudioEngine_src
     "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioFileReader.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioNodeInput.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/InMemoryBuffer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioBufferSourceNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioFileReader.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioNodeInputType.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/BiquadFilterNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/DelayNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioNodeOutput.cpp"
@@ -67,7 +65,6 @@ SET(AudioEngine_src
     "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioInputNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ControlTimeline.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/AudioNodeInput.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ControlTimeline.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ChannelSplitterNode.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/ChannelMergerNode.cpp"
@@ -85,5 +82,4 @@ SET(AudioEngine_include
 ADD_LIBRARY(dm-audioengine ${AudioEngine_src} ${AudioEngine_include} ${AudioEngine_platform})
 FSET_TARGET_OPTIONS(dm-audioengine "${DM_AUDIOENGINE_COMPILE_FLAGS}")
 
-ADD_SUBDIRECTORY(test EXCLUDE_FROM_ALL)
 

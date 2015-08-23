@@ -278,11 +278,6 @@ RefCounted<BiquadFilterNode> AudioContext::createBiquadFilterNode(DspBasics::Biq
   return RefCounted<BiquadFilterNode>(new (memoryPtr) BiquadFilterNode(this, type_, cutoff_, q_, gain_));
 }
 
-RefCounted<ConvolverNode> AudioContext::createConvolverNode() {
-  void* memoryPtr = utils::Singleton<utils::MemoryPool<ConvolverNode, std::mutex>>::instance().acquire();
-  return RefCounted<ConvolverNode>(new (memoryPtr) ConvolverNode(this));
-}
-
 RefCounted<DelayNode> AudioContext::createDelayNode(float initialDelay, float maxDelay) {
   void* memoryPtr = utils::Singleton<utils::MemoryPool<DelayNode, std::mutex>>::instance().acquire();
   return RefCounted<DelayNode>(new (memoryPtr) DelayNode(this, maxDelay, initialDelay));
@@ -311,11 +306,6 @@ RefCounted<OscillatorNode> AudioContext::createOscillatorNode(float frequency_) 
 RefCounted<SummingNode> AudioContext::createSummingNode(float initialValue1_, float initialValue2_) {
   void* memoryPtr = utils::Singleton<utils::MemoryPool<SummingNode, std::mutex>>::instance().acquire();
   return RefCounted<SummingNode>(new (memoryPtr) SummingNode(this, initialValue1_, initialValue2_));
-}
-
-RefCounted<BrickWallLimiterNode> AudioContext::createBrickWallLimiterNode() {
-  void* memoryPtr = utils::Singleton<utils::MemoryPool<BrickWallLimiterNode, std::mutex>>::instance().acquire();
-  return RefCounted<BrickWallLimiterNode>(new (memoryPtr) BrickWallLimiterNode(this));
 }
 
 RefCounted<ChannelSplitterNode> AudioContext::createChannelSplitterNode(int outputChannels) {
@@ -435,14 +425,10 @@ void AudioContext::AudioContextGG::TimedOperation() {
       utils::Singleton<utils::MemoryPool<AudioInputNode, std::mutex>>::instance().release((AudioInputNode*)item);
     } else if (strcmp("BiquadFilterNode", nodeType) == 0) {
       utils::Singleton<utils::MemoryPool<BiquadFilterNode, std::mutex>>::instance().release((BiquadFilterNode*)item);
-    } else if (strcmp("BrickWallLimiterNode", nodeType) == 0) {
-      utils::Singleton<utils::MemoryPool<BrickWallLimiterNode, std::mutex>>::instance().release((BrickWallLimiterNode*)item);
     } else if (strcmp("ChannelMergerNode", nodeType) == 0) {
       utils::Singleton<utils::MemoryPool<ChannelMergerNode, std::mutex>>::instance().release((ChannelMergerNode*)item);
     } else if (strcmp("ChannelSplitterNode", nodeType) == 0) {
       utils::Singleton<utils::MemoryPool<ChannelSplitterNode, std::mutex>>::instance().release((ChannelSplitterNode*)item);
-    } else if (strcmp("ConvolverNode", nodeType) == 0) {
-      utils::Singleton<utils::MemoryPool<ConvolverNode, std::mutex>>::instance().release((ConvolverNode*)item);
     } else if (strcmp("DynamicsCompressorNode", nodeType) == 0) {
       utils::Singleton<utils::MemoryPool<DynamicsCompressorNode, std::mutex>>::instance().release((DynamicsCompressorNode*)item);
     } else if (strcmp("OscillatorNode", nodeType) == 0) {
