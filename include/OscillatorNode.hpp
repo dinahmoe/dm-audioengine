@@ -31,7 +31,7 @@
 #define __Dmaf_Offline_Audio_Renderer__OscillatorNode__
 
 #include "AudioNode.hpp"
-#include "../../dm-dsp/include/Oscillator.hpp"
+#include "Oscillator.hpp"
 
 namespace dinahmoe {
 namespace audioengine {
