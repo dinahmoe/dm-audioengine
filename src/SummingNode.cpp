@@ -49,55 +49,86 @@ SummingNode::~SummingNode() {
 }
 
 void SummingNode::processInternal(int numSamples, int outputRequesting) {
-  bool isInput1SampleAccurate = m_inputs[0]->isSampleAccurate();
-  bool isInput2SampleAccurate = m_inputs[1]->isSampleAccurate();
+  const bool isInput1SampleAccurate = m_inputs[0]->isSampleAccurate();
+  const bool isInput2SampleAccurate = m_inputs[1]->isSampleAccurate();
+  const bool isInput1Silent =  m_inputBuffers[0]->isSilent;
+  const bool isInput2Silent = m_inputBuffers[1]->isSilent;
   
-  float* pOut = m_outputBuffers[0]->data[0];;
-  m_outputBuffers[0]->isSilent = false; // in general it's not gonna be silent
+  // this is the most likely condition
+  m_outputBuffers[0]->isSilent = false;
   
+  // isSampleAccurate() has the precedence over isSilent. that is, sometimes
+  // isSilent isn't set if isSampleAccurate and the value is zero
+  // completely consistent around the framework, sadly. has been introduced
+  // a bit later and some nodes are consistent with the model, some not. TODO
   if (isInput1SampleAccurate && isInput2SampleAccurate) {
-    bool isInput1Silent =  m_inputBuffers[0]->isSilent;
-    bool isInput2Silent = m_inputBuffers[1]->isSilent;
     if (isInput1Silent && isInput2Silent) {
       m_outputBuffers[0]->isSilent = true;
       return;
-    }
-    if (isInput1Silent) {
-      float *pIn2 = m_inputBuffers[1]->data[0];
-      std::copy(pIn2, pIn2 + numSamples, pOut);
+    } else if (isInput1Silent) {
+      float *pIn = nullptr;
+      float *pOut = nullptr;
+      for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+        pIn = m_inputBuffers[1]->data[ch < m_inputBuffers[1]->usedChannels ? ch : 0];
+        pOut = m_outputBuffers[0]->data[ch];
+        std::copy(pIn, pIn + numSamples, pOut);
+      }
       return;
-    }
-    if (isInput2Silent) {
-      float *pIn1 = m_inputBuffers[0]->data[0];
-      std::copy(pIn1, pIn1 + numSamples, pOut);
+    } else {
+      float *pIn = nullptr;
+      float *pOut = nullptr;
+      for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+        pIn = m_inputBuffers[1]->data[ch < m_inputBuffers[0]->usedChannels ? ch : 0];
+        pOut = m_outputBuffers[0]->data[ch];
+        std::copy(pIn, pIn + numSamples, pOut);
+      }
       return;
     }
   }
   if (isInput1SampleAccurate) {
-    bool isInput1Silent =  m_inputBuffers[0]->isSilent;
     float offset = m_inputs[1]->getValue();
     if (!isInput1Silent) {
-      float *pIn1 = m_inputBuffers[0]->data[0];
-      std::transform(pIn1, pIn1 + numSamples, pOut, std::bind2nd(std::plus<float>(), offset));
+      float *pIn = nullptr;
+      float *pOut = nullptr;
+      for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+        pOut = m_outputBuffers[0]->data[ch];
+        pIn = m_inputBuffers[0]->data[ch < m_inputBuffers[0]->usedChannels ? ch : 0];
+        std::transform(pIn, pIn + numSamples, pOut, std::bind2nd(std::plus<float>(), offset));
+      }
     } else {
-      std::fill(pOut, pOut + numSamples, offset);
+      float *pOut = nullptr;
+      for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+        pOut = m_outputBuffers[0]->data[ch];
+        std::fill(pOut, pOut + numSamples, offset);
+      }
     }
     return;
   }
   if (isInput2SampleAccurate) {
-    bool isInput2Silent = m_inputBuffers[1]->isSilent;
     float offset = m_inputs[0]->getValue();
     if (!isInput2Silent) {
-      float *pIn2 = m_inputBuffers[1]->data[0];
-      std::transform(pIn2, pIn2 + numSamples, pOut, std::bind2nd(std::plus<float>(), offset));
+      float *pIn = nullptr;
+      float *pOut = nullptr;
+      for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+        pOut = m_outputBuffers[0]->data[ch];
+        pIn = m_inputBuffers[1]->data[ch < m_inputBuffers[0]->usedChannels ? ch : 0];
+        std::transform(pIn, pIn + numSamples, pOut, std::bind2nd(std::plus<float>(), offset));
+      }
     } else {
-      std::fill(pOut, pOut + numSamples, offset);
+      float *pOut = nullptr;
+      for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+        pOut = m_outputBuffers[0]->data[ch];
+        std::fill(pOut, pOut + numSamples, offset);
+      }
     }
     return;
   }
-  
   float offset = m_inputs[0]->getValue() + m_inputs[1]->getValue();
-  std::fill(pOut, pOut + numSamples, offset);
+  float *pOut = nullptr;
+  for (int ch = 0; ch < m_outputBuffers[0]->usedChannels; ++ch) {
+    pOut = m_outputBuffers[0]->data[ch];
+    std::fill(pOut, pOut + numSamples, offset);
+  }
 }
 
 } // audioengine

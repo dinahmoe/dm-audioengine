@@ -35,6 +35,9 @@
 namespace dinahmoe {
 namespace audioengine {
 
+/** Sums the signal at its inputs, named "Input 1" and "Input 2"
+ *  The output channel count is the max between the input channel counts
+ */
 class SummingNode :
 	public AudioNode {
 public:	
