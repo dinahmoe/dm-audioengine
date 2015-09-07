@@ -58,6 +58,8 @@
 #include "WaveShaperNode.hpp"
 #include "OscillatorNode.hpp"
 #include "SummingNode.hpp"
+#include "StereoPannerNode.h"
+#include "PannerNode.h"
 #include "DmTimedConsumerMT.hpp"
 #include "DmEasyPoolST.hpp"
 
@@ -204,6 +206,14 @@ public:
   /*! \brief Creates a summing node
    */ 
   RefCounted<SummingNode> createSummingNode(float initialValue1_ = 1.0F, float initialValue2_ = 1.0F);
+  
+  /*! \brief Creates a steropanning node
+   */
+  RefCounted<StereoPannerNode> createStereoPannerNode(float pan = 0.0F);
+  
+  /*! \brief Creates a panning node
+   */
+  RefCounted<PannerNode> createPannerNode(AudioListener* listener, float x, float y, float z);
   
   /*! \brief Creates a TimelineEvent
    */ 

@@ -43,6 +43,8 @@
 #include "MemoryPool.hpp"
 #include "Singleton.hpp"
 #include "ControlTimeline.hpp"
+#include "StereoPannerNode.h"
+#include "PannerNode.h"
 
 namespace dinahmoe {
 namespace audioengine {
@@ -282,6 +284,15 @@ RefCounted<DelayNode> AudioContext::createDelayNode(float initialDelay, float ma
   void* memoryPtr = utils::Singleton<utils::MemoryPool<DelayNode, std::mutex>>::instance().acquire();
   return RefCounted<DelayNode>(new (memoryPtr) DelayNode(this, maxDelay, initialDelay));
 }
+RefCounted<StereoPannerNode> AudioContext::createStereoPannerNode(float pan) {
+    void* memoryPtr = utils::Singleton<utils::MemoryPool<StereoPannerNode, std::mutex>>::instance().acquire();
+    return RefCounted<StereoPannerNode>(new (memoryPtr) StereoPannerNode(this, pan));
+}
+RefCounted<PannerNode> AudioContext::createPannerNode(AudioListener* listener, float x, float y, float z){
+    void* memoryPtr = utils::Singleton<utils::MemoryPool<PannerNode, std::mutex>>::instance().acquire();
+    return RefCounted<PannerNode>(new (memoryPtr) PannerNode(this,listener, x, y, z));
+}
+
 
 RefCounted<AudioBufferSourceNode> AudioContext::createAudioBufferSourceNode(float playbackSpeed_) {
   void* memoryPtr = utils::Singleton<utils::MemoryPool<AudioBufferSourceNode, std::mutex>>::instance().acquire();
@@ -437,6 +448,12 @@ void AudioContext::AudioContextGG::TimedOperation() {
       utils::Singleton<utils::MemoryPool<SummingNode, std::mutex>>::instance().release((SummingNode*)item);
     } else if (strcmp("WaveShaperNode", nodeType) == 0) {
       utils::Singleton<utils::MemoryPool<WaveShaperNode, std::mutex>>::instance().release((WaveShaperNode*)item);
+    } else if (strcmp("DelayNode", nodeType) == 0) {
+      utils::Singleton<utils::MemoryPool<DelayNode, std::mutex>>::instance().release((DelayNode*)item);
+    } else if (strcmp("StereoPannerNode", nodeType) == 0) {
+      utils::Singleton<utils::MemoryPool<StereoPannerNode, std::mutex>>::instance().release((StereoPannerNode*)item);
+    } else if (strcmp("PannerNode", nodeType) == 0) {
+      utils::Singleton<utils::MemoryPool<PannerNode, std::mutex>>::instance().release((PannerNode*)item);
     } else {
       assert("Forgot a node?" && false);
     }
