@@ -63,6 +63,8 @@
 #include "DmTimedConsumerMT.hpp"
 #include "DmEasyPoolST.hpp"
 
+#include "AudioNodeInput.hpp"
+
 #define CHECK_CLIPPING 0
 
 namespace dinahmoe {

@@ -32,7 +32,7 @@
 
 
 #include "AudioNode.hpp"
-#include "../../dm-dsp/include/BiquadFilter.hpp"
+#include "BiquadFilter.hpp"
 
 namespace dinahmoe {
 namespace audioengine {

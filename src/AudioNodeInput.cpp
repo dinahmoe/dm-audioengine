@@ -148,6 +148,12 @@ int AudioNodeInput::getMaxChannels() {
   }
   return maxChan;
 }
+
+const bool AudioNodeInput::isSampleAccurate() const {
+  assert(node()->context()->isAudioThread());
+  return (m_currentType == TYPE_AUDIO || (m_currentType == TYPE_CONTROL && m_isSampleAccurate));
+}
+
 // if the type is audio, try to pull from the sources or return a silent buffer
 // if the type is control:
 // - if it's sample accurate fill the internal buffer and set m_isSampleAccurate to true

@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <exception>
+#include <sstream>
 
 namespace dinahmoe {
 namespace audioengine {
@@ -91,12 +92,12 @@ AudioFileReader::DecodingJob::DecodingJob(AudioFileReader* parent_, std::string 
 }
 
 void AudioFileReader::DecodingJob::decode() {
-  try {
-    if (m_parent->m_formatsManager->loadFile(m_path, m_destination->buffer, m_destination->sampleRate)) {
-      m_destination->setIsReady();
-    }
-  } catch (std::runtime_error ex) {
-    std::cerr << ex.what() << std::endl;
+  if (m_parent->m_formatsManager->loadFile(m_path, m_destination->buffer, m_destination->sampleRate)) {
+    m_destination->setIsReady();
+  } else {
+    std::stringstream ss;
+    ss << "Error loading file " << m_path;
+    throw std::runtime_error(ss.str());
   }
 }
 

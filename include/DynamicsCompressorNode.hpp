@@ -30,9 +30,8 @@
 #ifndef __Dmaf_Offline_Audio_Renderer__DynamicsCompressorNode__
 #define __Dmaf_Offline_Audio_Renderer__DynamicsCompressorNode__
 
-#include "../../dm-dsp/include/Compressor.hpp"
-
 #include "AudioNode.hpp"
+#include "Compressor.hpp"
 
 namespace dinahmoe {
 namespace audioengine {

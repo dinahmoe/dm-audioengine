@@ -86,10 +86,7 @@ public:
   const float getValue() const;
   
   // returns wether or not there are sample accurate values for this frame
-  const bool isSampleAccurate() const {
-    assert(node()->context()->isAudioThread());
-    return (m_currentType == TYPE_AUDIO || (m_currentType == TYPE_CONTROL && m_isSampleAccurate));
-  }
+  const bool isSampleAccurate() const;
   
 private:
   
