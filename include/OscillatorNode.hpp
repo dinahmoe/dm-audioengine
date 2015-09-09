@@ -44,8 +44,13 @@ public:
   inline const char* getType() { return "OscillatorNode"; }
 	void processInternal(int numSamples, int outputRequesting);
   void setPhase(float radians_) { m_oscillator.setPhase(radians_); }
+  void start(float offset = 0);
+  void stop(float offset = 0);
 private:
   dsp::Oscillator m_oscillator;
+  bool m_playing;
+  dm_time_seconds m_time;
+    
 };
 
 } // AUDIOENGINE

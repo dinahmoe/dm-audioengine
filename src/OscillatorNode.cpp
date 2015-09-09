@@ -38,7 +38,9 @@ namespace audioengine {
 
 OscillatorNode::OscillatorNode(AudioContext* context, dsp::Oscillator::WaveformType type_, float frequency_, float phase_) :
   AudioNode(context),
-  m_oscillator(context->getSampleRate(), type_) {
+  m_oscillator(context->getSampleRate(), type_),
+  m_playing(false),
+  m_time(0){
   addInput("Frequency control", TYPE_HYBRID);
   m_oscillator.setPhase(phase_);
   m_inputs[0]->setInitialValue(frequency_);
@@ -50,6 +52,15 @@ OscillatorNode::~OscillatorNode() {
 }
  
 void OscillatorNode::processInternal(int numSamples, int outputRequesting) {
+  if(m_time <= m_context->getCurrentTime() && m_time != 0){
+    if(m_playing){
+      m_playing = false;
+    }else{
+      m_playing = true;
+    }
+    m_time = 0;
+  }
+  if(m_playing){
   float* out =  m_outputBuffers[0]->data[0];
   m_outputBuffers[0]->isSilent = false;
   if (m_inputs[0]->isSampleAccurate()) {
@@ -72,6 +83,31 @@ void OscillatorNode::processInternal(int numSamples, int outputRequesting) {
     float freq = m_inputs[0]->getValue();
     std::generate(out, out + numSamples, [&]() { return m_oscillator.nextSample(freq);});
   }
+  }else{
+    m_outputBuffers[0]->isSilent = true;
+  }
 }
+  
+  void OscillatorNode::start(dm_time_seconds time){
+    if(!m_playing){
+      if(time <= m_context->getCurrentTime() && time <= 0){
+        m_time = 0;
+        m_playing = true;
+      }else{
+        m_time = time;
+      }
+    }
+  }
+  void OscillatorNode::stop(dm_time_seconds time){
+    if(m_playing){
+      if(time <= m_context->getCurrentTime() && time <= 0){
+        m_time = 0;
+        m_playing = false;
+      }else{
+        m_time = time;
+      }
+    }
+  }
+  
 } //AudioEngine
 } // DMAF
